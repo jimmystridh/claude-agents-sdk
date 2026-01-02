@@ -1,0 +1,138 @@
+name: CI and Release
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+          components: clippy, rustfmt
+
+      - name: Cache cargo
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Check formatting
+        run: cargo fmt --check
+
+      - name: Run Clippy
+        run: cargo clippy --all-targets --all-features -- -D warnings
+
+      - name: Run tests
+        run: cargo test --all-features
+
+      - name: Build docs
+        run: cargo doc --no-deps --all-features
+
+  build:
+    name: Build (${{ matrix.target }})
+    needs: test
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+          - os: macos-latest
+            target: x86_64-apple-darwin
+          - os: macos-latest
+            target: aarch64-apple-darwin
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+          targets: ${{ matrix.target }}
+
+      - name: Build
+        run: cargo build --release --target ${{ matrix.target }}
+
+  publish:
+    name: Publish to crates.io
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [test, build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Check if version changed
+        id: version_check
+        run: |
+          CURRENT_VERSION=$(grep '^version = ' Cargo.toml | sed 's/version = "\(.*\)"/\1/')
+          echo "current_version=${CURRENT_VERSION}" >> $GITHUB_OUTPUT
+
+          # Check if this version tag already exists
+          if git rev-parse "v${CURRENT_VERSION}" >/dev/null 2>&1; then
+            echo "Version v${CURRENT_VERSION} already released"
+            echo "should_publish=false" >> $GITHUB_OUTPUT
+          else
+            echo "New version v${CURRENT_VERSION} detected"
+            echo "should_publish=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Publish to crates.io
+        if: steps.version_check.outputs.should_publish == 'true'
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+        run: cargo publish
+
+      - name: Extract changelog for version
+        if: steps.version_check.outputs.should_publish == 'true'
+        id: changelog
+        run: |
+          VERSION="${{ steps.version_check.outputs.current_version }}"
+          # Extract changelog section for this version
+          CHANGELOG=$(awk "/^## \[${VERSION}\]/{flag=1; next} /^## \[/{flag=0} flag" CHANGELOG.md)
+          if [ -z "$CHANGELOG" ]; then
+            CHANGELOG="Release v${VERSION}"
+          fi
+          # Handle multiline output
+          echo "content<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGELOG" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Release
+        if: steps.version_check.outputs.should_publish == 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.version_check.outputs.current_version }}
+          name: v${{ steps.version_check.outputs.current_version }}
+          body: ${{ steps.changelog.outputs.content }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
