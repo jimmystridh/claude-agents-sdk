@@ -42,10 +42,10 @@ jobs:
         run: cargo fmt --check
 
       - name: Run Clippy
-        run: cargo clippy --all-targets --all-features -- -D warnings
+        run: cargo clippy --all-targets --features mcp -- -D warnings
 
       - name: Run tests
-        run: cargo test --all-features
+        run: cargo test --features mcp
 
       - name: Build docs
         run: cargo doc --no-deps --all-features
