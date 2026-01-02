@@ -1,4 +1,4 @@
-# claude-agent-sdk-rs
+# claude-agents-sdk
 
 A Rust SDK for building agents that interact with the Claude Code CLI.
 
@@ -20,7 +20,7 @@ Add to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-claude-agent-sdk-rs = "0.1"
+claude-agents-sdk = "0.1"
 tokio = { version = "1", features = ["full"] }
 tokio-stream = "0.1"
 ```
@@ -42,7 +42,7 @@ claude-agents-sdk = { version = "0.1", features = ["mcp"] }
 ### Simple Query
 
 ```rust
-use claude_agent_sdk_rs::{query, ClaudeAgentOptions, Message};
+use claude_agents_sdk::{query, ClaudeAgentOptions, Message};
 use tokio_stream::StreamExt;
 
 #[tokio::main]
@@ -69,7 +69,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 ### Streaming Client
 
 ```rust
-use claude_agent_sdk_rs::{ClaudeClient, ClaudeAgentOptions};
+use claude_agents_sdk::{ClaudeClient, ClaudeAgentOptions};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -94,7 +94,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 ### With Tool Permissions
 
 ```rust
-use claude_agent_sdk_rs::{ClaudeClientBuilder, PermissionResult, PermissionMode};
+use claude_agents_sdk::{ClaudeClientBuilder, PermissionResult, PermissionMode};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -212,7 +212,7 @@ The SDK provides `ClaudeSDKError`, a comprehensive error type for all failure mo
 ### Error Types
 
 ```rust
-use claude_agent_sdk_rs::ClaudeSDKError;
+use claude_agents_sdk::ClaudeSDKError;
 
 match result {
     // CLI not found or not installed
@@ -318,7 +318,7 @@ while let Some(result) = stream.next().await {
 All SDK functions return `Result<T, ClaudeSDKError>`:
 
 ```rust
-use claude_agent_sdk_rs::Result;
+use claude_agents_sdk::Result;
 
 async fn my_function() -> Result<String> {
     let mut client = ClaudeClient::new(None, None);
