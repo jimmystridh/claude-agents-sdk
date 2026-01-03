@@ -59,6 +59,12 @@ pub fn extract_assistant_text(messages: &[Message]) -> String {
         .join("")
 }
 
+/// Get combined response text from all assistant messages.
+/// Alias for extract_assistant_text.
+pub fn get_response_text(messages: &[Message]) -> String {
+    extract_assistant_text(messages)
+}
+
 /// Get the result message from a message list.
 pub fn get_result(messages: &[Message]) -> Option<&ResultMessage> {
     messages.iter().find_map(|m| {

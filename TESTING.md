@@ -69,6 +69,7 @@ make integration-shell
 | Client | `test_client.rs` | Builder API, multi-turn, model selection |
 | Context | `test_context.rs` | Conversation memory across turns |
 | Callbacks | `test_callbacks.rs` | Tool permission callbacks |
+| Hooks | `test_hooks.rs` | Lifecycle hooks (PreToolUse, PostToolUse) |
 | Cancellation | `test_cancellation.rs` | Timeouts, disconnects, task abort |
 | Resources | `test_resources.rs` | Process cleanup, no leaks |
 | Errors | `test_errors.rs` | Error handling, edge cases |

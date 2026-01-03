@@ -16,6 +16,7 @@ pub mod test_context;
 pub mod test_core;
 pub mod test_edge_cases;
 pub mod test_errors;
+pub mod test_hooks;
 pub mod test_resources;
 pub mod test_results;
 pub mod test_system_prompt;
