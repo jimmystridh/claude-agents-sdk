@@ -10,19 +10,7 @@
 - [x] Phase 8: Context & session management
 - [x] Phase 10: Docker infrastructure & CI
 
-## In Progress
-
-### 3. Property-Based Testing
-Add `proptest` for fuzzing inputs - message parsing, option validation, edge cases.
-
 ## Backlog
-
-### 4. Add More Examples
-Expand `examples/` with real-world use cases:
-- Error handling patterns
-- Streaming with progress
-- Tool callbacks
-- Hook usage
 
 ### 5. Improve Documentation
 - Add more rustdoc examples
