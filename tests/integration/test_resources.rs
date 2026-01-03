@@ -5,11 +5,14 @@
 
 #![cfg(feature = "integration-tests")]
 
-use claude_agents_sdk::{query, ClaudeAgentOptions, ClaudeClient, PermissionMode};
 use std::time::Duration;
+
+use claude_agents_sdk::{query, ClaudeClient};
 use tokio_stream::StreamExt;
 
-use crate::integration::helpers::*;
+use crate::integration::helpers::{
+    collect_messages, count_claude_processes, default_options, get_result, quick_options,
+};
 
 // ============================================================================
 // Process Cleanup Tests

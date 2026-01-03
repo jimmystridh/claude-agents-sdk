@@ -9,8 +9,8 @@ use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
 use std::sync::Arc;
 
 use claude_agents_sdk::{
-    ClaudeAgentOptions, ClaudeClient, HookCallback, HookContext, HookEvent, HookInput, HookMatcher,
-    HookOutput, PermissionMode, SyncHookOutput,
+    ClaudeAgentOptions, ClaudeClient, HookCallback, HookEvent, HookInput, HookMatcher, HookOutput,
+    PermissionMode, SyncHookOutput,
 };
 use tokio::sync::Mutex;
 

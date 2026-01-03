@@ -102,6 +102,7 @@ pub fn assert_message_types(messages: &[Message], expected: &[&str]) {
 // ============================================================================
 
 /// Collect messages with detailed error reporting.
+#[allow(dead_code)]
 pub async fn collect_messages_verbose(
     prompt: &str,
     options: ClaudeAgentOptions,
@@ -136,6 +137,7 @@ pub async fn collect_messages_verbose(
 }
 
 /// Assert response contains expected text (case-insensitive).
+#[allow(dead_code)]
 pub fn assert_response_contains(messages: &[Message], expected: &str) {
     let response = extract_assistant_text(messages);
     assert!(
@@ -147,6 +149,7 @@ pub fn assert_response_contains(messages: &[Message], expected: &str) {
 }
 
 /// Extract all tool uses from messages.
+#[allow(dead_code)]
 pub fn extract_tool_uses(messages: &[Message]) -> Vec<&ToolUseBlock> {
     messages
         .iter()
@@ -197,6 +200,7 @@ pub fn count_claude_processes() -> usize {
 }
 
 /// Retry an async function with exponential backoff.
+#[allow(dead_code)]
 pub async fn with_retry<F, Fut, T, E>(max_attempts: usize, f: F) -> Result<T, E>
 where
     F: Fn() -> Fut,
@@ -224,6 +228,7 @@ where
 }
 
 /// Create options for tests that require tool usage.
+#[allow(dead_code)]
 pub fn tool_test_options(allowed_tools: Vec<String>) -> ClaudeAgentOptions {
     ClaudeAgentOptions::new()
         .with_permission_mode(PermissionMode::BypassPermissions)

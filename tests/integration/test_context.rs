@@ -2,11 +2,7 @@
 
 #![cfg(feature = "integration-tests")]
 
-use std::time::Duration;
-
 use claude_agents_sdk::{ClaudeAgentOptions, ClaudeClient, PermissionMode};
-
-use crate::integration::helpers::*;
 
 /// Test that conversation context is maintained across turns.
 ///

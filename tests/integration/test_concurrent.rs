@@ -8,11 +8,10 @@ use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
 use std::time::Duration;
 
-use claude_agents_sdk::{query, ClaudeAgentOptions, ClaudeClient, Message, PermissionMode};
+use claude_agents_sdk::{ClaudeAgentOptions, ClaudeClient, PermissionMode};
 use tokio::sync::Barrier;
-use tokio_stream::StreamExt;
 
-use crate::integration::helpers::*;
+use crate::integration::helpers::{collect_messages, default_options};
 
 // ============================================================================
 // Concurrent Query Tests

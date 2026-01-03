@@ -5,16 +5,14 @@
 
 #![cfg(feature = "integration-tests")]
 
-use claude_agents_sdk::{
-    ClaudeAgentOptions, ClaudeClientBuilder, ContentBlock, Message, PermissionMode,
-    PermissionResult, UserMessageContent,
-};
 use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
 use std::sync::Arc;
+
+use claude_agents_sdk::{
+    ClaudeClientBuilder, ContentBlock, Message, PermissionMode, PermissionResult,
+};
 use tokio::sync::Mutex;
 use tokio_stream::StreamExt;
-
-use crate::integration::helpers::*;
 
 // ============================================================================
 // Callback Invocation Tests
@@ -185,20 +183,8 @@ async fn test_tool_callback_deny_prevents_use() {
         .await
         .expect("Failed to query");
 
-    let mut tool_result_errors = 0;
     while let Some(msg) = client.receive_messages().next().await {
         match msg.expect("Stream error") {
-            Message::User(user) => {
-                if let UserMessageContent::Blocks(blocks) = &user.content {
-                    for block in blocks {
-                        if let ContentBlock::ToolResult(result) = block {
-                            if result.is_error.unwrap_or(false) {
-                                tool_result_errors += 1;
-                            }
-                        }
-                    }
-                }
-            }
             Message::Result(_) => break,
             _ => {}
         }
