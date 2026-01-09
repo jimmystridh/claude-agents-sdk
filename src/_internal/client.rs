@@ -167,9 +167,9 @@ impl InternalClient {
             client.connect().await?;
             client.send_message(prompt).await?;
             // Take the message receiver before consuming client
-            let rx = client.take_message_rx().ok_or_else(|| {
-                ClaudeSDKError::internal("Message receiver not available")
-            })?;
+            let rx = client
+                .take_message_rx()
+                .ok_or_else(|| ClaudeSDKError::internal("Message receiver not available"))?;
             // Return a stream that keeps the client alive
             return Ok(Box::pin(ClientStream::new(client, rx)));
         }
@@ -272,7 +272,6 @@ impl InternalClient {
     pub fn is_connected(&self) -> bool {
         self.connected
     }
-
 }
 
 impl Drop for InternalClient {

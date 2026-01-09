@@ -135,11 +135,7 @@ async fn timed_streaming() -> Result<(), Box<dyn std::error::Error>> {
         .with_permission_mode(PermissionMode::Default)
         .with_max_turns(1);
 
-    let mut stream = query(
-        "Explain what a closure is in one sentence.",
-        Some(options),
-    )
-    .await?;
+    let mut stream = query("Explain what a closure is in one sentence.", Some(options)).await?;
 
     let start = Instant::now();
     let mut last_update = start;

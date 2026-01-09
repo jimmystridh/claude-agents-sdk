@@ -74,11 +74,7 @@ async fn with_tight_budget() -> Result<(), Box<dyn std::error::Error>> {
     let mut options = ClaudeAgentOptions::new();
     options.max_budget_usd = Some(0.0001); // Very small budget - will be exceeded quickly
 
-    let mut stream = query(
-        "Read the README.md file and summarize it",
-        Some(options),
-    )
-    .await?;
+    let mut stream = query("Read the README.md file and summarize it", Some(options)).await?;
 
     while let Some(message) = stream.next().await {
         match message? {
