@@ -111,7 +111,7 @@ async fn test_two_concurrent_clients() {
             .with_permission_mode(PermissionMode::Default)
             .with_max_turns(1);
 
-        let mut client = ClaudeClient::new(Some(options), None);
+        let mut client = ClaudeClient::new(Some(options));
 
         if let Err(e) = client.connect().await {
             eprintln!("Client 1 connect failed: {}", e);
@@ -135,7 +135,7 @@ async fn test_two_concurrent_clients() {
             .with_permission_mode(PermissionMode::Default)
             .with_max_turns(1);
 
-        let mut client = ClaudeClient::new(Some(options), None);
+        let mut client = ClaudeClient::new(Some(options));
 
         if let Err(e) = client.connect().await {
             eprintln!("Client 2 connect failed: {}", e);
@@ -184,7 +184,7 @@ async fn test_synchronized_concurrent_clients() {
             .with_permission_mode(PermissionMode::Default)
             .with_max_turns(1);
 
-        let mut client = ClaudeClient::new(Some(options), None);
+        let mut client = ClaudeClient::new(Some(options));
 
         // Wait for both clients to be ready
         b1.wait().await;
@@ -206,7 +206,7 @@ async fn test_synchronized_concurrent_clients() {
             .with_permission_mode(PermissionMode::Default)
             .with_max_turns(1);
 
-        let mut client = ClaudeClient::new(Some(options), None);
+        let mut client = ClaudeClient::new(Some(options));
 
         // Wait for both clients to be ready
         b2.wait().await;
@@ -260,7 +260,7 @@ async fn test_concurrent_sessions_isolated() {
             .with_permission_mode(PermissionMode::Default)
             .with_max_turns(1);
 
-        let mut client = ClaudeClient::new(Some(options), None);
+        let mut client = ClaudeClient::new(Some(options));
 
         if client.connect().await.is_err() {
             return;
@@ -291,7 +291,7 @@ async fn test_concurrent_sessions_isolated() {
             .with_permission_mode(PermissionMode::Default)
             .with_max_turns(1);
 
-        let mut client = ClaudeClient::new(Some(options), None);
+        let mut client = ClaudeClient::new(Some(options));
 
         if client.connect().await.is_err() {
             return;

@@ -92,7 +92,7 @@ async fn test_builder_with_can_use_tool_callback() {
 async fn test_connect_disconnect_no_queries() {
     let options = ClaudeAgentOptions::new().with_permission_mode(PermissionMode::Default);
 
-    let mut client = ClaudeClient::new(Some(options), None);
+    let mut client = ClaudeClient::new(Some(options));
 
     client.connect().await.expect("Failed to connect");
     client.disconnect().await.expect("Failed to disconnect");
@@ -105,7 +105,7 @@ async fn test_receive_messages_streaming() {
         .with_permission_mode(PermissionMode::Default)
         .with_max_turns(1);
 
-    let mut client = ClaudeClient::new(Some(options), None);
+    let mut client = ClaudeClient::new(Some(options));
     client.connect().await.expect("Failed to connect");
 
     client
@@ -148,7 +148,7 @@ async fn test_partial_messages_option() {
         .with_permission_mode(PermissionMode::Default)
         .with_max_turns(1);
 
-    let mut client = ClaudeClient::new(Some(options), None);
+    let mut client = ClaudeClient::new(Some(options));
     client.connect().await.expect("Failed to connect");
 
     client

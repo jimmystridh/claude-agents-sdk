@@ -65,7 +65,7 @@ fn display_message(msg: &Message) {
 async fn example_basic_streaming() -> Result<(), Box<dyn std::error::Error>> {
     println!("=== Basic Streaming Example ===");
 
-    let mut client = ClaudeClient::new(None, None);
+    let mut client = ClaudeClient::new(None);
     client.connect().await?;
 
     println!("User: What is 2+2?");
@@ -84,7 +84,7 @@ async fn example_basic_streaming() -> Result<(), Box<dyn std::error::Error>> {
 async fn example_multi_turn_conversation() -> Result<(), Box<dyn std::error::Error>> {
     println!("=== Multi-Turn Conversation Example ===");
 
-    let mut client = ClaudeClient::new(None, None);
+    let mut client = ClaudeClient::new(None);
     client.connect().await?;
 
     // First turn
@@ -112,7 +112,7 @@ async fn example_with_interrupt() -> Result<(), Box<dyn std::error::Error>> {
     println!("=== Interrupt Example ===");
     println!("IMPORTANT: Interrupts require active message consumption.");
 
-    let mut client = ClaudeClient::new(None, None);
+    let mut client = ClaudeClient::new(None);
     client.connect().await?;
 
     // Start a long-running task
@@ -173,7 +173,7 @@ async fn example_with_options() -> Result<(), Box<dyn std::error::Error>> {
         .with_allowed_tools(vec!["Read".to_string(), "Write".to_string()])
         .with_system_prompt("You are a helpful coding assistant.");
 
-    let mut client = ClaudeClient::new(Some(options), None);
+    let mut client = ClaudeClient::new(Some(options));
     client.connect().await?;
 
     println!("User: Create a simple hello.txt file with a greeting message");
@@ -218,7 +218,7 @@ async fn example_bash_command() -> Result<(), Box<dyn std::error::Error>> {
 
     let options = ClaudeAgentOptions::new().with_allowed_tools(vec!["Bash".to_string()]);
 
-    let mut client = ClaudeClient::new(Some(options), None);
+    let mut client = ClaudeClient::new(Some(options));
     client.connect().await?;
 
     println!("User: Run a bash echo command");
@@ -308,7 +308,7 @@ async fn example_control_protocol() -> Result<(), Box<dyn std::error::Error>> {
     println!("=== Control Protocol Example ===");
     println!("Shows server info retrieval and interrupt capability\n");
 
-    let mut client = ClaudeClient::new(None, None);
+    let mut client = ClaudeClient::new(None);
     client.connect().await?;
 
     // 1. Get server initialization info
@@ -394,7 +394,7 @@ async fn example_control_protocol() -> Result<(), Box<dyn std::error::Error>> {
 async fn example_error_handling() -> Result<(), Box<dyn std::error::Error>> {
     println!("=== Error Handling Example ===");
 
-    let mut client = ClaudeClient::new(None, None);
+    let mut client = ClaudeClient::new(None);
 
     match client.connect().await {
         Ok(()) => {

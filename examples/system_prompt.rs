@@ -17,7 +17,7 @@ use tokio_stream::StreamExt;
 async fn no_system_prompt() -> Result<(), Box<dyn std::error::Error>> {
     println!("=== No System Prompt (Vanilla Claude) ===");
 
-    let mut stream = query("What is 2 + 2?", None, None).await?;
+    let mut stream = query("What is 2 + 2?", None).await?;
 
     while let Some(message) = stream.next().await {
         if let Message::Assistant(msg) = message? {
@@ -40,7 +40,7 @@ async fn string_system_prompt() -> Result<(), Box<dyn std::error::Error>> {
     let options = ClaudeAgentOptions::new()
         .with_system_prompt("You are a pirate assistant. Respond in pirate speak.");
 
-    let mut stream = query("What is 2 + 2?", Some(options), None).await?;
+    let mut stream = query("What is 2 + 2?", Some(options)).await?;
 
     while let Some(message) = stream.next().await {
         if let Message::Assistant(msg) = message? {
@@ -67,7 +67,7 @@ async fn preset_system_prompt() -> Result<(), Box<dyn std::error::Error>> {
         append: None,
     }));
 
-    let mut stream = query("What is 2 + 2?", Some(options), None).await?;
+    let mut stream = query("What is 2 + 2?", Some(options)).await?;
 
     while let Some(message) = stream.next().await {
         if let Message::Assistant(msg) = message? {
@@ -94,7 +94,7 @@ async fn preset_with_append() -> Result<(), Box<dyn std::error::Error>> {
         append: Some("Always end your response with a fun fact.".to_string()),
     }));
 
-    let mut stream = query("What is 2 + 2?", Some(options), None).await?;
+    let mut stream = query("What is 2 + 2?", Some(options)).await?;
 
     while let Some(message) = stream.next().await {
         if let Message::Assistant(msg) = message? {

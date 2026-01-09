@@ -236,7 +236,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         println!("Prompt: {}", prompt);
         println!("{}", "=".repeat(50));
 
-        let mut client = ClaudeClient::new(Some(options.clone()), None);
+        let mut client = ClaudeClient::new(Some(options.clone()));
         client.connect().await?;
 
         client.query(prompt).await?;

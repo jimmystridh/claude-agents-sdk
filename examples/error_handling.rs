@@ -45,7 +45,7 @@ async fn connection_error_handling() {
         .with_permission_mode(PermissionMode::Default)
         .with_max_turns(1);
 
-    let mut client = ClaudeClient::new(Some(options), None);
+    let mut client = ClaudeClient::new(Some(options));
 
     match client.connect().await {
         Ok(_) => {
@@ -88,7 +88,7 @@ async fn query_error_recovery() {
             .with_max_turns(1)
             .with_timeout_secs(30);
 
-        match query("Say 'success'", Some(options), None).await {
+        match query("Say 'success'", Some(options)).await {
             Ok(mut stream) => {
                 let mut response = String::new();
                 let mut got_result = false;
@@ -150,7 +150,7 @@ async fn timeout_handling() {
     let app_timeout = Duration::from_secs(30);
 
     let query_future = async {
-        let mut stream = query("What is 1+1?", Some(options), None).await?;
+        let mut stream = query("What is 1+1?", Some(options)).await?;
         let mut response = String::new();
 
         while let Some(msg) = stream.next().await {
@@ -186,7 +186,7 @@ async fn stream_error_handling() {
         .with_permission_mode(PermissionMode::Default)
         .with_max_turns(1);
 
-    match query("Say 'hello'", Some(options), None).await {
+    match query("Say 'hello'", Some(options)).await {
         Ok(mut stream) => {
             let mut message_count = 0;
             let mut error_count = 0;
@@ -240,7 +240,7 @@ async fn result_combinators() {
         .with_max_turns(1);
 
     // Using map_err for error transformation
-    let result = query("Say 'test'", Some(options), None)
+    let result = query("Say 'test'", Some(options))
         .await
         .map_err(|e| format!("Query init failed: {}", e));
 

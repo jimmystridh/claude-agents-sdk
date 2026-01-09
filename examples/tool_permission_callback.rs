@@ -141,7 +141,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     options.cwd = Some(std::path::PathBuf::from("."));
 
     // Create client and send a query that will use multiple tools
-    let mut client = ClaudeClient::new(Some(options), None);
+    let mut client = ClaudeClient::new(Some(options));
     client.connect().await?;
 
     println!("\n📝 Sending query to Claude...");

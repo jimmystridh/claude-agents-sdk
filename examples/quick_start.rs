@@ -14,7 +14,7 @@ use tokio_stream::StreamExt;
 async fn basic_example() -> Result<(), Box<dyn std::error::Error>> {
     println!("=== Basic Example ===");
 
-    let mut stream = query("What is 2 + 2?", None, None).await?;
+    let mut stream = query("What is 2 + 2?", None).await?;
 
     while let Some(message) = stream.next().await {
         if let Message::Assistant(msg) = message? {
@@ -38,7 +38,7 @@ async fn with_options_example() -> Result<(), Box<dyn std::error::Error>> {
         .with_system_prompt("You are a helpful assistant that explains things simply.")
         .with_max_turns(1);
 
-    let mut stream = query("Explain what Rust is in one sentence.", Some(options), None).await?;
+    let mut stream = query("Explain what Rust is in one sentence.", Some(options)).await?;
 
     while let Some(message) = stream.next().await {
         if let Message::Assistant(msg) = message? {
@@ -65,7 +65,6 @@ async fn with_tools_example() -> Result<(), Box<dyn std::error::Error>> {
     let mut stream = query(
         "Create a file called hello.txt with 'Hello, World!' in it",
         Some(options),
-        None,
     )
     .await?;
 

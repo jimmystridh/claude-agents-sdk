@@ -14,7 +14,6 @@ use tokio::sync::mpsc;
 use tokio_stream::{Stream, StreamExt};
 
 use crate::_internal::client::InternalClient;
-use crate::_internal::transport::Transport;
 use crate::errors::{ClaudeSDKError, Result};
 use crate::types::*;
 
@@ -35,7 +34,7 @@ use crate::types::*;
 ///
 /// #[tokio::main]
 /// async fn main() -> Result<(), Box<dyn std::error::Error>> {
-///     let mut client = ClaudeClient::new(None, None);
+///     let mut client = ClaudeClient::new(None);
 ///     client.connect().await?;
 ///
 ///     // Send first query
@@ -65,7 +64,7 @@ use crate::types::*;
 ///             PermissionResult::allow()
 ///         });
 ///
-///     let mut client = ClaudeClient::new(Some(options), None);
+///     let mut client = ClaudeClient::new(Some(options));
 ///     client.connect().await?;
 ///
 ///     // Queries will now invoke the callback for tool permissions
@@ -78,8 +77,6 @@ pub struct ClaudeClient {
     internal: InternalClient,
     /// Message receiver from the internal client.
     message_rx: Option<mpsc::Receiver<Result<Message>>>,
-    /// Custom transport if provided.
-    _transport: Option<Box<dyn Transport>>,
 }
 
 impl ClaudeClient {
@@ -88,7 +85,6 @@ impl ClaudeClient {
     /// # Arguments
     ///
     /// * `options` - Optional configuration for the client
-    /// * `transport` - Optional custom transport (uses subprocess by default)
     ///
     /// # Examples
     ///
@@ -96,19 +92,18 @@ impl ClaudeClient {
     /// use claude_agents_sdk::{ClaudeClient, ClaudeAgentOptions, PermissionMode};
     ///
     /// // Default configuration
-    /// let client = ClaudeClient::new(None, None);
+    /// let client = ClaudeClient::new(None);
     ///
     /// // With custom options
     /// let options = ClaudeAgentOptions::new()
     ///     .with_model("claude-3-opus")
     ///     .with_permission_mode(PermissionMode::AcceptEdits);
-    /// let client = ClaudeClient::new(Some(options), None);
+    /// let client = ClaudeClient::new(Some(options));
     /// ```
-    pub fn new(options: Option<ClaudeAgentOptions>, transport: Option<Box<dyn Transport>>) -> Self {
+    pub fn new(options: Option<ClaudeAgentOptions>) -> Self {
         Self {
             internal: InternalClient::new(options.unwrap_or_default()),
             message_rx: None,
-            _transport: transport,
         }
     }
 
@@ -131,7 +126,7 @@ impl ClaudeClient {
     ///
     /// #[tokio::main]
     /// async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    ///     let mut client = ClaudeClient::new(None, None);
+    ///     let mut client = ClaudeClient::new(None);
     ///     client.connect().await?;
     ///     // Client is now ready for queries
     ///     Ok(())
@@ -164,7 +159,7 @@ impl ClaudeClient {
     ///
     /// #[tokio::main]
     /// async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    ///     let mut client = ClaudeClient::new(None, None);
+    ///     let mut client = ClaudeClient::new(None);
     ///     client.connect().await?;
     ///
     ///     client.query("Hello!").await?;
@@ -190,7 +185,7 @@ impl ClaudeClient {
     ///
     /// #[tokio::main]
     /// async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    ///     let mut client = ClaudeClient::new(None, None);
+    ///     let mut client = ClaudeClient::new(None);
     ///     client.connect().await?;
     ///     client.query("Tell me a joke").await?;
     ///
@@ -231,7 +226,7 @@ impl ClaudeClient {
     ///
     /// #[tokio::main]
     /// async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    ///     let mut client = ClaudeClient::new(None, None);
+    ///     let mut client = ClaudeClient::new(None);
     ///     client.connect().await?;
     ///     client.query("What is 2 + 2?").await?;
     ///
@@ -275,7 +270,7 @@ impl ClaudeClient {
     ///
     /// #[tokio::main]
     /// async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    ///     let mut client = ClaudeClient::new(None, None);
+    ///     let mut client = ClaudeClient::new(None);
     ///     client.connect().await?;
     ///     client.query("Write a very long story").await?;
     ///
@@ -303,7 +298,7 @@ impl ClaudeClient {
     ///
     /// #[tokio::main]
     /// async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    ///     let mut client = ClaudeClient::new(None, None);
+    ///     let mut client = ClaudeClient::new(None);
     ///     client.connect().await?;
     ///
     ///     // Switch to accept edits mode
@@ -329,7 +324,7 @@ impl ClaudeClient {
     ///
     /// #[tokio::main]
     /// async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    ///     let mut client = ClaudeClient::new(None, None);
+    ///     let mut client = ClaudeClient::new(None);
     ///     client.connect().await?;
     ///
     ///     // Switch to a different model
@@ -360,7 +355,7 @@ impl ClaudeClient {
     ///     let mut options = ClaudeAgentOptions::new();
     ///     options.enable_file_checkpointing = true;
     ///
-    ///     let mut client = ClaudeClient::new(Some(options), None);
+    ///     let mut client = ClaudeClient::new(Some(options));
     ///     client.connect().await?;
     ///
     ///     // Later, rewind to a previous state
@@ -389,7 +384,7 @@ impl ClaudeClient {
     ///
     /// #[tokio::main]
     /// async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    ///     let mut client = ClaudeClient::new(None, None);
+    ///     let mut client = ClaudeClient::new(None);
     ///     client.connect().await?;
     ///
     ///     if let Some(info) = client.get_server_info().await {
@@ -415,7 +410,7 @@ impl ClaudeClient {
     ///
     /// #[tokio::main]
     /// async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    ///     let mut client = ClaudeClient::new(None, None);
+    ///     let mut client = ClaudeClient::new(None);
     ///     client.connect().await?;
     ///
     ///     // Use the client...
@@ -544,7 +539,7 @@ impl ClaudeClientBuilder {
 
     /// Build the client.
     pub fn build(self) -> ClaudeClient {
-        ClaudeClient::new(Some(self.options), None)
+        ClaudeClient::new(Some(self.options))
     }
 }
 
@@ -567,7 +562,7 @@ impl Default for ClaudeClientBuilder {
 ///
 /// #[tokio::main]
 /// async fn main() -> Result<(), Box<dyn std::error::Error>> {
-///     let mut client = ClaudeClient::new(None, None);
+///     let mut client = ClaudeClient::new(None);
 ///     client.connect().await?;
 ///
 ///     // Create guard - client will be disconnected when guard is dropped
@@ -589,7 +584,7 @@ impl Default for ClaudeClientBuilder {
 ///
 /// #[tokio::main]
 /// async fn main() -> Result<(), Box<dyn std::error::Error>> {
-///     let mut client = ClaudeClient::new(None, None);
+///     let mut client = ClaudeClient::new(None);
 ///     client.connect().await?;
 ///
 ///     let guard = client.into_guard();
@@ -601,15 +596,19 @@ impl Default for ClaudeClientBuilder {
 /// ```
 pub struct ClientGuard {
     client: Option<ClaudeClient>,
-    runtime: tokio::runtime::Handle,
+    runtime: Option<tokio::runtime::Handle>,
 }
 
 impl ClientGuard {
     /// Create a new guard for the client.
+    ///
+    /// # Note
+    /// If called outside of a Tokio runtime context, the guard will still work
+    /// but automatic disconnect on drop will be skipped (with a warning logged).
     pub fn new(client: ClaudeClient) -> Self {
         Self {
             client: Some(client),
-            runtime: tokio::runtime::Handle::current(),
+            runtime: tokio::runtime::Handle::try_current().ok(),
         }
     }
 
@@ -633,9 +632,17 @@ impl Drop for ClientGuard {
     fn drop(&mut self) {
         if let Some(mut client) = self.client.take() {
             // Spawn a task to disconnect - we can't do async in drop
-            self.runtime.spawn(async move {
-                let _ = client.disconnect().await;
-            });
+            if let Some(runtime) = &self.runtime {
+                runtime.spawn(async move {
+                    let _ = client.disconnect().await;
+                });
+            } else {
+                // No runtime available - skip async disconnect
+                // The underlying transport will be dropped anyway
+                tracing::warn!(
+                    "ClientGuard dropped without Tokio runtime - skipping async disconnect"
+                );
+            }
         }
     }
 }

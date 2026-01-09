@@ -46,6 +46,35 @@ impl Stream for QueryStream {
 // - Query contains Arc<Mutex<...>>, Arc<RwLock<...>>, etc. which are all Send
 // - ReceiverStream<Result<Message>> is Send when Result<Message> is Send
 
+/// A stream that keeps the InternalClient alive while consuming messages.
+///
+/// This wrapper is used for one-shot queries with callbacks (streaming mode)
+/// to ensure the client (and its Query/reader task) stays alive until the
+/// stream is fully consumed or dropped.
+pub struct ClientStream {
+    /// Holds the InternalClient to keep its background tasks alive.
+    #[allow(dead_code)]
+    client: InternalClient,
+    receiver: tokio_stream::wrappers::ReceiverStream<Result<Message>>,
+}
+
+impl ClientStream {
+    fn new(client: InternalClient, rx: mpsc::Receiver<Result<Message>>) -> Self {
+        Self {
+            client,
+            receiver: tokio_stream::wrappers::ReceiverStream::new(rx),
+        }
+    }
+}
+
+impl Stream for ClientStream {
+    type Item = Result<Message>;
+
+    fn poll_next(mut self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Option<Self::Item>> {
+        Pin::new(&mut self.receiver).poll_next(cx)
+    }
+}
+
 /// Internal client for processing Claude queries.
 ///
 /// This is the core implementation that handles communication with the CLI.
@@ -137,7 +166,12 @@ impl InternalClient {
             let mut client = InternalClient::new(options);
             client.connect().await?;
             client.send_message(prompt).await?;
-            return client.into_stream();
+            // Take the message receiver before consuming client
+            let rx = client.take_message_rx().ok_or_else(|| {
+                ClaudeSDKError::internal("Message receiver not available")
+            })?;
+            // Return a stream that keeps the client alive
+            return Ok(Box::pin(ClientStream::new(client, rx)));
         }
 
         // Create transport in non-streaming mode
@@ -239,17 +273,6 @@ impl InternalClient {
         self.connected
     }
 
-    /// Convert into a message stream.
-    ///
-    /// # Errors
-    /// Returns an error if the message receiver is not available (already taken or never initialized).
-    pub fn into_stream(mut self) -> Result<Pin<Box<dyn Stream<Item = Result<Message>> + Send>>> {
-        let rx = self
-            .message_rx
-            .take()
-            .ok_or_else(|| ClaudeSDKError::internal("Message receiver not available"))?;
-        Ok(Box::pin(tokio_stream::wrappers::ReceiverStream::new(rx)))
-    }
 }
 
 impl Drop for InternalClient {

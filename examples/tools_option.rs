@@ -25,7 +25,6 @@ async fn tools_array_example() -> Result<(), Box<dyn std::error::Error>> {
     let mut stream = query(
         "What tools do you have available? Just list them briefly.",
         Some(options),
-        None,
     )
     .await?;
 
@@ -74,7 +73,6 @@ async fn tools_empty_array_example() -> Result<(), Box<dyn std::error::Error>> {
     let mut stream = query(
         "What tools do you have available? Just list them briefly.",
         Some(options),
-        None,
     )
     .await?;
 
@@ -126,7 +124,6 @@ async fn tools_preset_example() -> Result<(), Box<dyn std::error::Error>> {
     let mut stream = query(
         "What tools do you have available? Just list them briefly.",
         Some(options),
-        None,
     )
     .await?;
 

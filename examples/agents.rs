@@ -35,7 +35,6 @@ async fn code_reviewer_example() -> Result<(), Box<dyn std::error::Error>> {
     let mut stream = query(
         "Use the code-reviewer agent to review the code in src/lib.rs",
         Some(options),
-        None,
     )
     .await?;
 
@@ -90,7 +89,6 @@ async fn documentation_writer_example() -> Result<(), Box<dyn std::error::Error>
     let mut stream = query(
         "Use the doc-writer agent to explain what AgentDefinition is used for",
         Some(options),
-        None,
     )
     .await?;
 
@@ -162,7 +160,6 @@ async fn multiple_agents_example() -> Result<(), Box<dyn std::error::Error>> {
     let mut stream = query(
         "Use the analyzer agent to find all Rust files in the examples/ directory",
         Some(options),
-        None,
     )
     .await?;
 

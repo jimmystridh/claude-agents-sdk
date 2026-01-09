@@ -51,7 +51,7 @@ async fn test_streaming_client_multi_turn() {
         .with_permission_mode(PermissionMode::Default)
         .with_max_turns(3);
 
-    let mut client = ClaudeClient::new(Some(options), None);
+    let mut client = ClaudeClient::new(Some(options));
     client.connect().await.expect("Failed to connect");
 
     // First query
@@ -102,7 +102,7 @@ async fn test_streaming_client_multi_turn() {
 #[tokio::test]
 async fn test_streaming_user_message_format() {
     let options = default_options();
-    let mut client = ClaudeClient::new(Some(options), None);
+    let mut client = ClaudeClient::new(Some(options));
     client.connect().await.expect("Failed to connect");
 
     client

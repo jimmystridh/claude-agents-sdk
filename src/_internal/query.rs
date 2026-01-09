@@ -479,7 +479,7 @@ impl Query {
         for (event, matchers) in hooks {
             let mut event_config = Vec::new();
 
-            for matcher in matchers {
+            for (matcher_idx, matcher) in matchers.iter().enumerate() {
                 let mut matcher_config = serde_json::Map::new();
 
                 if let Some(ref pattern) = matcher.matcher {
@@ -490,11 +490,16 @@ impl Query {
                     matcher_config.insert("timeout".to_string(), serde_json::json!(timeout));
                 }
 
-                // Register callbacks
+                // Register callbacks with unique IDs across all matchers for this event
                 let mut callback_ids = Vec::new();
-                for (i, callback) in matcher.hooks.iter().enumerate() {
-                    let callback_id =
-                        format!("{}_{}", serde_json::to_string(event).unwrap_or_default(), i);
+                for (callback_idx, callback) in matcher.hooks.iter().enumerate() {
+                    // Include matcher index to ensure uniqueness across matchers
+                    let callback_id = format!(
+                        "{}_{}_{}",
+                        serde_json::to_string(event).unwrap_or_default(),
+                        matcher_idx,
+                        callback_idx
+                    );
                     callback_ids.push(callback_id.clone());
 
                     let mut callbacks = self.hook_callbacks.write().await;

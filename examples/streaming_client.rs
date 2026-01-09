@@ -21,7 +21,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .with_permission_mode(PermissionMode::Default);
 
     // Create and connect the client
-    let mut client = ClaudeClient::new(Some(options), None);
+    let mut client = ClaudeClient::new(Some(options));
     client.connect().await?;
 
     println!("Connected to Claude CLI\n");

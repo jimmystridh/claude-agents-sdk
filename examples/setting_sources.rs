@@ -50,7 +50,7 @@ async fn example_default() -> Result<(), Box<dyn std::error::Error>> {
     let mut options = ClaudeAgentOptions::new();
     options.cwd = Some(sdk_dir);
 
-    let mut client = ClaudeClient::new(Some(options), None);
+    let mut client = ClaudeClient::new(Some(options));
     client.connect().await?;
 
     client.query("What is 2 + 2?").await?;
@@ -89,7 +89,7 @@ async fn example_user_only() -> Result<(), Box<dyn std::error::Error>> {
     options.setting_sources = Some(vec![SettingSource::User]);
     options.cwd = Some(sdk_dir);
 
-    let mut client = ClaudeClient::new(Some(options), None);
+    let mut client = ClaudeClient::new(Some(options));
     client.connect().await?;
 
     client.query("What is 2 + 2?").await?;
@@ -128,7 +128,7 @@ async fn example_project_and_user() -> Result<(), Box<dyn std::error::Error>> {
     options.setting_sources = Some(vec![SettingSource::User, SettingSource::Project]);
     options.cwd = Some(sdk_dir);
 
-    let mut client = ClaudeClient::new(Some(options), None);
+    let mut client = ClaudeClient::new(Some(options));
     client.connect().await?;
 
     client.query("What is 2 + 2?").await?;

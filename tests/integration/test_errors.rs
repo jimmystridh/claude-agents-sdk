@@ -129,7 +129,7 @@ async fn test_very_long_prompt() {
 /// Test that connection errors are reported clearly.
 #[tokio::test]
 async fn test_connection_error_reporting() {
-    let mut client = ClaudeClient::new(Some(default_options()), None);
+    let mut client = ClaudeClient::new(Some(default_options()));
 
     // Connect should work (it spawns the subprocess)
     let connect_result = client.connect().await;
@@ -151,7 +151,7 @@ async fn test_connection_error_reporting() {
 /// Test behavior when sending query without connecting first.
 #[tokio::test]
 async fn test_query_without_connect() {
-    let mut client = ClaudeClient::new(Some(default_options()), None);
+    let mut client = ClaudeClient::new(Some(default_options()));
 
     // Try to query without connecting - should fail gracefully
     let query_result = client.query("Hello").await;
@@ -165,7 +165,7 @@ async fn test_query_without_connect() {
 /// Test double disconnect handling.
 #[tokio::test]
 async fn test_double_disconnect() {
-    let mut client = ClaudeClient::new(Some(default_options()), None);
+    let mut client = ClaudeClient::new(Some(default_options()));
     client.connect().await.expect("Failed to connect");
 
     // First disconnect
@@ -184,7 +184,7 @@ async fn test_double_disconnect() {
 /// Test double connect handling.
 #[tokio::test]
 async fn test_double_connect() {
-    let mut client = ClaudeClient::new(Some(default_options()), None);
+    let mut client = ClaudeClient::new(Some(default_options()));
 
     // First connect
     client.connect().await.expect("First connect failed");

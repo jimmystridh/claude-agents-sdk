@@ -62,7 +62,7 @@ async fn test_tool_result_parsing() {
         .with_permission_mode(PermissionMode::Default)
         .with_max_turns(3);
 
-    let mut client = ClaudeClient::new(Some(options), None);
+    let mut client = ClaudeClient::new(Some(options));
 
     let connect_result = tokio::time::timeout(Duration::from_secs(30), client.connect()).await;
 

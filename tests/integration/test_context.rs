@@ -13,7 +13,7 @@ async fn test_conversation_context_maintained() {
         .with_permission_mode(PermissionMode::Default)
         .with_max_turns(2);
 
-    let mut client = ClaudeClient::new(Some(options), None);
+    let mut client = ClaudeClient::new(Some(options));
     client.connect().await.expect("Failed to connect");
 
     // First turn: establish a number
@@ -63,7 +63,7 @@ async fn test_three_turn_conversation() {
         .with_permission_mode(PermissionMode::Default)
         .with_max_turns(3);
 
-    let mut client = ClaudeClient::new(Some(options), None);
+    let mut client = ClaudeClient::new(Some(options));
     client.connect().await.expect("Failed to connect");
 
     // Turn 1: Start with a number
@@ -106,7 +106,7 @@ async fn test_session_id_consistent_across_turns() {
         .with_permission_mode(PermissionMode::Default)
         .with_max_turns(2);
 
-    let mut client = ClaudeClient::new(Some(options), None);
+    let mut client = ClaudeClient::new(Some(options));
     client.connect().await.expect("Failed to connect");
 
     // Turn 1
@@ -141,7 +141,7 @@ async fn test_different_clients_different_sessions() {
         .with_max_turns(1);
 
     // Client 1
-    let mut client1 = ClaudeClient::new(Some(options1), None);
+    let mut client1 = ClaudeClient::new(Some(options1));
     client1.connect().await.expect("Client 1 connect failed");
     client1.query("Say 'client1'").await.unwrap();
     let (_, result1) = client1.receive_response().await.unwrap();
@@ -149,7 +149,7 @@ async fn test_different_clients_different_sessions() {
     client1.disconnect().await.ok();
 
     // Client 2
-    let mut client2 = ClaudeClient::new(Some(options2), None);
+    let mut client2 = ClaudeClient::new(Some(options2));
     client2.connect().await.expect("Client 2 connect failed");
     client2.query("Say 'client2'").await.unwrap();
     let (_, result2) = client2.receive_response().await.unwrap();
@@ -176,7 +176,7 @@ async fn test_session_resume_with_id() {
         .with_max_turns(1);
 
     // First session: establish context
-    let mut client1 = ClaudeClient::new(Some(options.clone()), None);
+    let mut client1 = ClaudeClient::new(Some(options.clone()));
     client1.connect().await.expect("Connect failed");
 
     client1
@@ -193,7 +193,7 @@ async fn test_session_resume_with_id() {
         .with_max_turns(1);
     resume_options.resume = Some(session_id.clone());
 
-    let mut client2 = ClaudeClient::new(Some(resume_options), None);
+    let mut client2 = ClaudeClient::new(Some(resume_options));
 
     match client2.connect().await {
         Ok(_) => {
@@ -235,7 +235,7 @@ async fn test_context_with_multiple_facts() {
         .with_permission_mode(PermissionMode::Default)
         .with_max_turns(4);
 
-    let mut client = ClaudeClient::new(Some(options), None);
+    let mut client = ClaudeClient::new(Some(options));
     client.connect().await.expect("Failed to connect");
 
     // Turn 1: First fact
@@ -309,7 +309,7 @@ async fn test_turn_counter_reported() {
         .with_permission_mode(PermissionMode::Default)
         .with_max_turns(3);
 
-    let mut client = ClaudeClient::new(Some(options), None);
+    let mut client = ClaudeClient::new(Some(options));
     client.connect().await.expect("Failed to connect");
 
     // Turn 1
@@ -344,7 +344,7 @@ async fn test_max_turns_limit() {
         .with_permission_mode(PermissionMode::Default)
         .with_max_turns(2);
 
-    let mut client = ClaudeClient::new(Some(options), None);
+    let mut client = ClaudeClient::new(Some(options));
     client.connect().await.expect("Failed to connect");
 
     // Turn 1
@@ -393,7 +393,7 @@ async fn test_reconnect_creates_fresh_context() {
         .with_max_turns(1);
 
     // First connection: establish context
-    let mut client = ClaudeClient::new(Some(options.clone()), None);
+    let mut client = ClaudeClient::new(Some(options.clone()));
     client.connect().await.expect("Connect failed");
 
     client
@@ -406,7 +406,7 @@ async fn test_reconnect_creates_fresh_context() {
     client.disconnect().await.expect("Disconnect failed");
 
     // Second connection: should not have previous context
-    let mut client2 = ClaudeClient::new(Some(options), None);
+    let mut client2 = ClaudeClient::new(Some(options));
     client2.connect().await.expect("Reconnect failed");
 
     client2
@@ -444,7 +444,7 @@ async fn test_duration_tracking() {
         .with_permission_mode(PermissionMode::Default)
         .with_max_turns(2);
 
-    let mut client = ClaudeClient::new(Some(options), None);
+    let mut client = ClaudeClient::new(Some(options));
     client.connect().await.expect("Failed to connect");
 
     // Simple query

@@ -92,7 +92,7 @@ async fn test_disconnect_during_query() {
         .with_max_turns(5)
         .with_permission_mode(PermissionMode::Default);
 
-    let mut client = ClaudeClient::new(Some(options), None);
+    let mut client = ClaudeClient::new(Some(options));
     client.connect().await.expect("Failed to connect");
 
     // Start a query
@@ -114,7 +114,7 @@ async fn test_disconnect_during_query() {
     }
 
     // Verify we can create a new client
-    let mut client2 = ClaudeClient::new(Some(default_options()), None);
+    let mut client2 = ClaudeClient::new(Some(default_options()));
     client2
         .connect()
         .await
@@ -125,7 +125,7 @@ async fn test_disconnect_during_query() {
 /// Test disconnect before any query.
 #[tokio::test]
 async fn test_disconnect_before_query() {
-    let mut client = ClaudeClient::new(Some(default_options()), None);
+    let mut client = ClaudeClient::new(Some(default_options()));
     client.connect().await.expect("Failed to connect");
 
     // Disconnect without sending any query
@@ -138,7 +138,7 @@ async fn test_disconnect_before_query() {
 /// Test disconnect after query completion.
 #[tokio::test]
 async fn test_disconnect_after_completion() {
-    let mut client = ClaudeClient::new(Some(default_options()), None);
+    let mut client = ClaudeClient::new(Some(default_options()));
     client.connect().await.expect("Failed to connect");
 
     client
@@ -172,7 +172,7 @@ async fn test_tokio_select_cancellation() {
         .with_max_turns(3)
         .with_permission_mode(PermissionMode::Default);
 
-    let mut client = ClaudeClient::new(Some(options), None);
+    let mut client = ClaudeClient::new(Some(options));
     client.connect().await.expect("Failed to connect");
 
     client
@@ -313,7 +313,7 @@ async fn test_outer_timeout_safety() {
 #[tokio::test]
 async fn test_rapid_reconnect_cycles() {
     for i in 0..5 {
-        let mut client = ClaudeClient::new(Some(default_options()), None);
+        let mut client = ClaudeClient::new(Some(default_options()));
 
         client
             .connect()
@@ -345,7 +345,7 @@ async fn test_rapid_reconnect_cycles() {
 /// Test reconnect after error.
 #[tokio::test]
 async fn test_reconnect_after_error() {
-    let mut client = ClaudeClient::new(Some(default_options()), None);
+    let mut client = ClaudeClient::new(Some(default_options()));
     client.connect().await.expect("Failed to connect");
 
     // Force an error by disconnecting during operation

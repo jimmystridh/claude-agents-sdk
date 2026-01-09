@@ -21,7 +21,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .with_system_prompt("You are a helpful assistant. Be concise.");
 
     // Send query and process stream
-    let mut stream = query("What is the capital of France?", Some(options), None).await?;
+    let mut stream = query("What is the capital of France?", Some(options)).await?;
 
     while let Some(message) = stream.next().await {
         match message? {

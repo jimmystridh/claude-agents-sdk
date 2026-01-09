@@ -8,7 +8,6 @@ use std::pin::Pin;
 use tokio_stream::Stream;
 
 use crate::_internal::client::InternalClient;
-use crate::_internal::transport::Transport;
 use crate::errors::Result;
 use crate::types::{ClaudeAgentOptions, Message};
 
@@ -22,7 +21,6 @@ use crate::types::{ClaudeAgentOptions, Message};
 ///
 /// * `prompt` - The prompt to send to Claude
 /// * `options` - Optional configuration for the query
-/// * `transport` - Optional custom transport (uses subprocess by default)
 ///
 /// # Returns
 ///
@@ -40,7 +38,7 @@ use crate::types::{ClaudeAgentOptions, Message};
 ///         .with_model("claude-3-sonnet")
 ///         .with_max_turns(3);
 ///
-///     let mut stream = query("Hello, Claude!", Some(options), None).await?;
+///     let mut stream = query("Hello, Claude!", Some(options)).await?;
 ///
 ///     while let Some(message) = stream.next().await {
 ///         match message? {
@@ -66,7 +64,6 @@ use crate::types::{ClaudeAgentOptions, Message};
 pub async fn query(
     prompt: &str,
     options: Option<ClaudeAgentOptions>,
-    _transport: Option<Box<dyn Transport>>,
 ) -> Result<Pin<Box<dyn Stream<Item = Result<Message>> + Send>>> {
     let options = options.unwrap_or_default();
     InternalClient::process_query(options, prompt).await
@@ -108,7 +105,7 @@ pub async fn query(
 pub async fn query_all(prompt: &str, options: Option<ClaudeAgentOptions>) -> Result<Vec<Message>> {
     use tokio_stream::StreamExt;
 
-    let mut stream = query(prompt, options, None).await?;
+    let mut stream = query(prompt, options).await?;
     let mut messages = Vec::new();
 
     while let Some(result) = stream.next().await {
@@ -170,7 +167,7 @@ where
     I: IntoIterator<Item = &'a str>,
 {
     let prompt: String = chunks.into_iter().collect();
-    query(&prompt, options, None).await
+    query(&prompt, options).await
 }
 
 /// Get the final result from a query.
@@ -210,7 +207,7 @@ pub async fn query_result(
 ) -> Result<(String, crate::types::ResultMessage)> {
     use tokio_stream::StreamExt;
 
-    let mut stream = query(prompt, options, None).await?;
+    let mut stream = query(prompt, options).await?;
     let mut response_parts: Vec<String> = Vec::new();
     let mut result_message = None;
 

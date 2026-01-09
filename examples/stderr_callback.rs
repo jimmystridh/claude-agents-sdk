@@ -34,7 +34,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Run a query
     println!("Running query with stderr capture...");
 
-    let mut stream = query("What is 2+2?", Some(options), None).await?;
+    let mut stream = query("What is 2+2?", Some(options)).await?;
 
     while let Some(message) = stream.next().await {
         if let Message::Assistant(msg) = message? {

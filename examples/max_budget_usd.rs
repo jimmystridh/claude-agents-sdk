@@ -10,7 +10,7 @@ use tokio_stream::StreamExt;
 async fn without_budget() -> Result<(), Box<dyn std::error::Error>> {
     println!("=== Without Budget Limit ===");
 
-    let mut stream = query("What is 2 + 2?", None, None).await?;
+    let mut stream = query("What is 2 + 2?", None).await?;
 
     while let Some(message) = stream.next().await {
         match message? {
@@ -42,7 +42,7 @@ async fn with_reasonable_budget() -> Result<(), Box<dyn std::error::Error>> {
     let mut options = ClaudeAgentOptions::new();
     options.max_budget_usd = Some(0.10); // 10 cents - plenty for a simple query
 
-    let mut stream = query("What is 2 + 2?", Some(options), None).await?;
+    let mut stream = query("What is 2 + 2?", Some(options)).await?;
 
     while let Some(message) = stream.next().await {
         match message? {
@@ -77,7 +77,6 @@ async fn with_tight_budget() -> Result<(), Box<dyn std::error::Error>> {
     let mut stream = query(
         "Read the README.md file and summarize it",
         Some(options),
-        None,
     )
     .await?;
 

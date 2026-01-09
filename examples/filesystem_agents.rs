@@ -52,7 +52,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut message_types: Vec<String> = Vec::new();
     let mut agents_found: Vec<String> = Vec::new();
 
-    let mut client = ClaudeClient::new(Some(options), None);
+    let mut client = ClaudeClient::new(Some(options));
     client.connect().await?;
 
     client.query("Say hello in exactly 3 words").await?;

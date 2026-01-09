@@ -134,7 +134,7 @@ async fn example_basic_hooks() -> Result<(), Box<dyn std::error::Error>> {
     options.allowed_tools = vec!["Bash".to_string()];
     options.hooks = Some(hooks);
 
-    let mut client = ClaudeClient::new(Some(options), None);
+    let mut client = ClaudeClient::new(Some(options));
     client.connect().await?;
 
     println!("User: Run echo hello");
@@ -169,7 +169,7 @@ async fn example_security_hooks() -> Result<(), Box<dyn std::error::Error>> {
     options.allowed_tools = vec!["Bash".to_string()];
     options.hooks = Some(hooks);
 
-    let mut client = ClaudeClient::new(Some(options), None);
+    let mut client = ClaudeClient::new(Some(options));
     client.connect().await?;
 
     // Test 1: Safe command

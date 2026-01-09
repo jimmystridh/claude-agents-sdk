@@ -20,7 +20,7 @@
 //!     let options = ClaudeAgentOptions::new()
 //!         .with_max_turns(3);
 //!
-//!     let mut stream = query("What is 2 + 2?", Some(options), None).await?;
+//!     let mut stream = query("What is 2 + 2?", Some(options)).await?;
 //!
 //!     while let Some(message) = stream.next().await {
 //!         match message? {
@@ -43,7 +43,7 @@
 //!
 //! #[tokio::main]
 //! async fn main() -> Result<(), Box<dyn std::error::Error>> {
-//!     let mut client = ClaudeClient::new(None, None);
+//!     let mut client = ClaudeClient::new(None);
 //!     client.connect().await?;
 //!
 //!     // First query
@@ -107,7 +107,7 @@
 //!         .with_permission_mode(PermissionMode::Default)
 //!         .with_timeout_secs(30);
 //!
-//!     match query("Hello", Some(options), None).await {
+//!     match query("Hello", Some(options)).await {
 //!         Ok(stream) => {
 //!             // Process stream...
 //!         }

@@ -551,14 +551,17 @@ impl Transport for SubprocessTransport {
     }
 
     fn message_stream(&self) -> Pin<Box<dyn Stream<Item = Result<serde_json::Value>> + Send + '_>> {
-        // We need to consume from the channel receiver
-        // This is a bit tricky because we can't move out of &self
-        // In practice, this is called once and the stream is consumed
-        Box::pin(futures::stream::unfold((), |_| async {
-            // This implementation is a placeholder - the actual stream
-            // is managed by the Query type which has ownership
-            None
-        }))
+        // The message_stream method from the Transport trait cannot be properly
+        // implemented with &self because we need to take ownership of the channel.
+        // Users should use take_stdout_rx() instead which takes &mut self.
+        //
+        // This returns an empty stream - the actual message stream is obtained
+        // via take_stdout_rx() on SubprocessTransport directly.
+        //
+        // Note: If custom transport support is re-added in the future, this trait
+        // method should be redesigned to use &mut self or an Arc-wrapped receiver.
+        warn!("message_stream() called on SubprocessTransport - use take_stdout_rx() instead");
+        Box::pin(futures::stream::empty())
     }
 
     async fn close(&mut self) -> Result<()> {

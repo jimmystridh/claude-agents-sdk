@@ -463,7 +463,7 @@ async fn test_hooks_with_client_multi_turn() {
         .with_max_turns(3);
     options.hooks = Some(hooks);
 
-    let mut client = ClaudeClient::new(Some(options), None);
+    let mut client = ClaudeClient::new(Some(options));
 
     if let Err(e) = client.connect().await {
         eprintln!("Connect failed: {}", e);

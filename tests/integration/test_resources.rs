@@ -24,7 +24,7 @@ async fn test_process_cleanup_after_disconnect() {
     let initial_count = count_claude_processes();
 
     for i in 0..3 {
-        let mut client = ClaudeClient::new(Some(default_options()), None);
+        let mut client = ClaudeClient::new(Some(default_options()));
         client.connect().await.expect("Failed to connect");
 
         client
@@ -87,7 +87,7 @@ async fn test_cleanup_on_client_drop_without_disconnect() {
     let initial_count = count_claude_processes();
 
     {
-        let mut client = ClaudeClient::new(Some(default_options()), None);
+        let mut client = ClaudeClient::new(Some(default_options()));
         client.connect().await.expect("Failed to connect");
         client.query("Hello").await.expect("Failed to query");
         // Drop without calling disconnect()
@@ -183,7 +183,7 @@ async fn test_cleanup_after_error() {
 
     // Try some operations that might fail
     for _ in 0..3 {
-        let mut client = ClaudeClient::new(Some(default_options()), None);
+        let mut client = ClaudeClient::new(Some(default_options()));
 
         if client.connect().await.is_ok() {
             // Send query
