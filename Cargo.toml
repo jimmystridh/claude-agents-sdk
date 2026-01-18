@@ -30,7 +30,7 @@ uuid = { version = "1.6", features = ["v4"] }
 tracing = "0.1"
 semver = "1.0"
 tempfile = "3.9"
-which = "7.0"
+which = "8.0"
 
 # Optional MCP support
 mcp-core = { version = "0.1", optional = true }
@@ -39,7 +39,7 @@ mcp-core = { version = "0.1", optional = true }
 tokio-test = "0.4"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 pretty_assertions = "1.4"
-mockall = "0.12"
+mockall = "0.14"
 proptest = "1.4"
 tempfile = "3.9"
 
