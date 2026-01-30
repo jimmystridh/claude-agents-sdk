@@ -250,6 +250,16 @@ impl InternalClient {
         query.get_server_info().await
     }
 
+    /// Get current MCP server connection status.
+    pub async fn get_mcp_status(&self) -> Result<serde_json::Value> {
+        let query = self
+            .query
+            .as_ref()
+            .ok_or_else(|| ClaudeSDKError::cli_connection("Client not connected"))?;
+
+        query.get_mcp_status().await
+    }
+
     /// Disconnect from the CLI.
     pub async fn disconnect(&mut self) -> Result<()> {
         if !self.connected {

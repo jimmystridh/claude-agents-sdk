@@ -399,6 +399,11 @@ impl ClaudeClient {
         self.internal.get_server_info().await
     }
 
+    /// Get current MCP server connection status (streaming mode only).
+    pub async fn get_mcp_status(&self) -> Result<serde_json::Value> {
+        self.internal.get_mcp_status().await
+    }
+
     /// Disconnect from the Claude CLI.
     ///
     /// Gracefully closes the connection to the CLI process.
