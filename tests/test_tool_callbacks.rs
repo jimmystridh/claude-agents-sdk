@@ -261,6 +261,7 @@ fn test_hook_event_variants() {
     let events = vec![
         HookEvent::PreToolUse,
         HookEvent::PostToolUse,
+        HookEvent::PostToolUseFailure,
         HookEvent::UserPromptSubmit,
         HookEvent::Stop,
         HookEvent::SubagentStop,
@@ -273,7 +274,7 @@ fn test_hook_event_variants() {
         map.insert(event, format!("{:?}", event));
     }
 
-    assert_eq!(map.len(), 6);
+    assert_eq!(map.len(), 7);
     assert!(map.contains_key(&HookEvent::PreToolUse));
     assert!(map.contains_key(&HookEvent::PostToolUse));
 }
@@ -363,4 +364,15 @@ async fn test_hook_callback_execution() {
         HookOutput::Sync(_) => {}
         _ => panic!("Expected sync output"),
     }
+}
+
+#[test]
+fn test_control_request_payload_mcp_status_serialization() {
+    use claude_agents_sdk::ControlRequestPayload;
+
+    let payload = ControlRequestPayload::McpStatus;
+    let json = serde_json::to_string(&payload).unwrap();
+
+    // Should serialize as {"subtype":"mcp_status"}
+    assert!(json.contains("\"subtype\":\"mcp_status\""));
 }

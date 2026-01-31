@@ -278,6 +278,8 @@ pub enum HookEvent {
     PreToolUse,
     /// After a tool is used.
     PostToolUse,
+    /// After a tool use fails.
+    PostToolUseFailure,
     /// When user submits a prompt.
     UserPromptSubmit,
     /// Stop hook.
@@ -330,6 +332,27 @@ pub struct PostToolUseHookInput {
     pub tool_input: serde_json::Value,
     /// Response from the tool.
     pub tool_response: serde_json::Value,
+}
+
+/// Input for PostToolUseFailure hook events.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PostToolUseFailureHookInput {
+    /// Base fields.
+    #[serde(flatten)]
+    pub base: BaseHookInput,
+    /// Hook event name.
+    pub hook_event_name: String,
+    /// Name of the tool that failed.
+    pub tool_name: String,
+    /// Input that was passed to the tool.
+    pub tool_input: serde_json::Value,
+    /// Tool use ID.
+    pub tool_use_id: String,
+    /// Error message.
+    pub error: String,
+    /// Whether the failure was due to an interrupt.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_interrupt: Option<bool>,
 }
 
 /// Input for UserPromptSubmit hook events.
@@ -401,6 +424,8 @@ pub enum HookInput {
     PreToolUse(PreToolUseHookInput),
     /// PostToolUse hook input.
     PostToolUse(PostToolUseHookInput),
+    /// PostToolUseFailure hook input.
+    PostToolUseFailure(PostToolUseFailureHookInput),
     /// UserPromptSubmit hook input.
     UserPromptSubmit(UserPromptSubmitHookInput),
     /// Stop hook input.
@@ -441,6 +466,18 @@ pub struct PostToolUseHookSpecificOutput {
     pub additional_context: Option<String>,
 }
 
+/// Hook-specific output for PostToolUseFailure events.
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct PostToolUseFailureHookSpecificOutput {
+    /// Event name.
+    #[serde(rename = "hookEventName")]
+    pub hook_event_name: String,
+    /// Additional context to add.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub additional_context: Option<String>,
+}
+
 /// Hook-specific output for UserPromptSubmit events.
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -461,6 +498,8 @@ pub enum HookSpecificOutput {
     PreToolUse(PreToolUseHookSpecificOutput),
     /// PostToolUse specific output.
     PostToolUse(PostToolUseHookSpecificOutput),
+    /// PostToolUseFailure specific output.
+    PostToolUseFailure(PostToolUseFailureHookSpecificOutput),
     /// UserPromptSubmit specific output.
     UserPromptSubmit(UserPromptSubmitHookSpecificOutput),
 }
@@ -1338,6 +1377,9 @@ pub enum ControlRequestPayload {
         /// JSONRPC message.
         message: serde_json::Value,
     },
+    /// MCP status request.
+    #[serde(rename = "mcp_status")]
+    McpStatus,
     /// Rewind files request.
     #[serde(rename = "rewind_files")]
     RewindFiles {

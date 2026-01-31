@@ -517,6 +517,7 @@ impl Query {
             let event_name = match event {
                 HookEvent::PreToolUse => "PreToolUse",
                 HookEvent::PostToolUse => "PostToolUse",
+                HookEvent::PostToolUseFailure => "PostToolUseFailure",
                 HookEvent::UserPromptSubmit => "UserPromptSubmit",
                 HookEvent::Stop => "Stop",
                 HookEvent::SubagentStop => "SubagentStop",
@@ -571,6 +572,15 @@ impl Query {
         })
         .await?;
         Ok(())
+    }
+
+    /// Get current MCP server connection status.
+    ///
+    /// Returns a JSON object (typically containing a `mcpServers` array) with status
+    /// for all configured MCP servers.
+    pub async fn get_mcp_status(&self) -> Result<serde_json::Value> {
+        self.send_control_request(ControlRequestPayload::McpStatus)
+            .await
     }
 
     /// Send a user message to the CLI.
